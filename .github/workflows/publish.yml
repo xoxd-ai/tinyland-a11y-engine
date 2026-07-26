@@ -12,28 +12,76 @@ on:
 permissions:
   actions: read
   contents: read
-  id-token: write
-  packages: write
+  packages: read
 jobs:
-  package:
-    uses: tinyland-inc/ci-templates/.github/workflows/js-bazel-package.yml@61cd1338ca9dae8a25985c0a36ff7beb111449be
-    with:
-      runner_mode: repo_owned
-      runner_labels_json: ${{ vars.PRIMARY_LINUX_RUNNER_LABELS_JSON }}
-      workspace_mode: isolated
-      publish_mode: hosted_exception
-      node_versions: '["22"]'
-      publish_node_version: "22"
-      pnpm_version: "10.13.1"
-      typecheck_command: pnpm typecheck
-      unit_test_command: pnpm test
-      build_command: pnpm build
-      package_check_command: pnpm check:package
-      bazel_targets: "//:pkg //:test"
-      package_dir: ./bazel-bin/pkg
-      npm_access: public
-      npm_publish_mode: disabled
-      github_package_name: "@tinyland-inc/tinyland-a11y-engine"
-      dry_run: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run || false }}
-    secrets:
-      TINYLAND_GITHUB_PACKAGES_TOKEN: ${{ secrets.TINYLAND_GITHUB_PACKAGES_TOKEN }}
+  validate:
+    runs-on: ${{ fromJSON(vars.PRIMARY_LINUX_RUNNER_LABELS_JSON) }}
+    timeout-minutes: 60
+    env:
+      NIX_CONFIG: |
+        access-tokens = github.com=${{ github.token }}
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Install Nix on hosted fallback
+        if: ${{ runner.environment == 'github-hosted' }}
+        uses: DeterminateSystems/nix-installer-action@ef8a148080ab6020fd15196c2084a2eea5ff2d25 # v22
+      - name: Validate locked flake
+        run: nix flake check --no-build
+      - name: Validate release ref
+        if: ${{ github.event_name == 'release' }}
+        run: nix develop --command just release-ref-check "${{ github.event.release.tag_name }}"
+      - name: Validate package producer and isolated consumer
+        run: nix develop --command just release-check
+      - name: Materialize package artifact
+        run: nix develop --command just package-artifact
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: bazel-pkg-0.2.5
+          path: dist/ci/bazel-pkg.tar.gz
+          if-no-files-found: error
+          retention-days: 1
+
+  publish-github:
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      actions: read
+      contents: read
+      packages: write
+    env:
+      NIX_CONFIG: |
+        access-tokens = github.com=${{ github.token }}
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: DeterminateSystems/nix-installer-action@ef8a148080ab6020fd15196c2084a2eea5ff2d25 # v22
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: bazel-pkg-0.2.5
+          path: dist/ci
+      - name: Extract validated package
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/tinyland-a11y-publish"
+          tar -xzf dist/ci/bazel-pkg.tar.gz -C "$RUNNER_TEMP/tinyland-a11y-publish"
+      - name: Resolve publish mode
+        id: publish-mode
+        env:
+          DISPATCH_DRY_RUN: ${{ inputs.dry_run }}
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          set -euo pipefail
+          if [[ "$EVENT_NAME" == "release" ]]; then
+            dry_run=false
+          else
+            dry_run="${DISPATCH_DRY_RUN:-true}"
+          fi
+          echo "dry_run=$dry_run" >> "$GITHUB_OUTPUT"
+      - name: Publish GitHub package
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.TINYLAND_GITHUB_PACKAGES_TOKEN || github.token }}
+          PUBLISH_CONFIRM: ${{ steps.publish-mode.outputs.dry_run == 'false' && '@tinyland-inc/tinyland-a11y-engine@0.2.5' || '' }}
+        run: >-
+          nix develop --command just github-package-publish
+          "$RUNNER_TEMP/tinyland-a11y-publish/pkg"
+          "${{ steps.publish-mode.outputs.dry_run }}"

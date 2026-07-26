@@ -1,7 +1,10 @@
 load("@aspect_rules_ts//ts:defs.bzl", "ts_project")
+load("@aspect_rules_js//js:defs.bzl", "js_test")
 load("@aspect_rules_js//npm:defs.bzl", "npm_link_package", "npm_package")
 load("@tummycrypt_tinyland_a11y_engine_npm//:defs.bzl", "npm_link_all_packages")
+load("@tummycrypt_tinyland_a11y_engine_npm//:publint/package_json.bzl", publint_bin = "bin")
 load("@tummycrypt_tinyland_a11y_engine_npm//:vitest/package_json.bzl", vitest_bin = "bin")
+load("//:producer_parity.bzl", "producer_package_metadata")
 
 npm_link_all_packages(name = "node_modules")
 
@@ -50,8 +53,58 @@ npm_package(
         ":tinyland_a11y_engine",
     ],
     package = "@tummycrypt/tinyland-a11y-engine",
-    version = "0.2.3",
+    version = "0.2.5",
     visibility = ["//visibility:public"],
+)
+
+# Link the package exactly as a downstream rules_js consumer does. The parity
+# test imports this link, including the NpmPackageInfo-propagated color utility.
+npm_link_package(
+    name = "node_modules/@tummycrypt/tinyland-a11y-engine",
+    src = ":pkg",
+)
+
+producer_package_metadata(
+    name = "producer_parity_metadata",
+    compiled = ":tinyland_a11y_engine",
+    expected_dependencies = {
+        "@tummycrypt/tinyland-color-utils": "0.2.3",
+    },
+    expected_package = "@tummycrypt/tinyland-a11y-engine",
+    expected_version = "0.2.5",
+    package = ":pkg",
+)
+
+js_test(
+    name = "producer_parity",
+    args = [
+        "$(rootpath :producer_parity_metadata)",
+        "$(rootpath :pkg)",
+        "$(rootpath package.json)",
+        "$(rootpath MODULE.bazel)",
+    ],
+    data = [
+        ":node_modules/@tummycrypt/tinyland-a11y-engine",
+        ":pkg",
+        ":producer_parity_metadata",
+        "MODULE.bazel",
+        "package.json",
+        "tests/producer-parity/package.json",
+    ],
+    entry_point = "tests/producer-parity/index.mjs",
+    node_options = ["--experimental-import-meta-resolve"],
+)
+
+publint_bin.publint_test(
+    name = "package_check",
+    args = [
+        "--pack=false",
+        "$(rootpath :pkg)",
+    ],
+    data = [
+        ":node_modules/publint",
+        ":pkg",
+    ],
 )
 
 vitest_bin.vitest_test(
