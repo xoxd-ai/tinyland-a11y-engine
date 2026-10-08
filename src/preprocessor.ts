@@ -46,30 +46,24 @@ const WCAG_REQUIREMENTS = {
   ui: { AA: 3 }
 };
 
+const MEMORY_LIMIT_BYTES = 20 * 1024 * 1024;
 
-let memoryStats: MemoryStats = {
-  used: 0,
-  limit: 20 * 1024 * 1024, 
-  pressure: 'low'
-};
-
-
-let issues: PreprocessorIssue[] = [];
-
-
-
-
-function checkMemoryPressure(): void {
+function checkMemoryPressure(): MemoryStats {
   const usage = process.memoryUsage();
-  memoryStats.used = usage.heapUsed;
-  memoryStats.pressure = memoryStats.used > memoryStats.limit * 0.9 ? 'critical' :
-                        memoryStats.used > memoryStats.limit * 0.7 ? 'high' :
-                        memoryStats.used > memoryStats.limit * 0.5 ? 'medium' : 'low';
+  const stats: MemoryStats = {
+    used: usage.heapUsed,
+    limit: MEMORY_LIMIT_BYTES,
+    pressure:
+      usage.heapUsed > MEMORY_LIMIT_BYTES * 0.9 ? 'critical' :
+      usage.heapUsed > MEMORY_LIMIT_BYTES * 0.7 ? 'high' :
+      usage.heapUsed > MEMORY_LIMIT_BYTES * 0.5 ? 'medium' : 'low'
+  };
   
-  if (memoryStats.pressure === 'critical') {
-    console.warn('Memory pressure critical, clearing cache...');
-    issues = []; 
+  if (stats.pressure === 'critical') {
+    console.warn('Memory pressure critical while loading theme colors');
   }
+
+  return stats;
 }
 
 
@@ -121,7 +115,8 @@ function loadThemeColors(): Record<string, { light: string; dark: string }> {
 
 function validateColorContrast(
   element: any, 
-  themeColors: Record<string, { light: string; dark: string }>
+  themeColors: Record<string, { light: string; dark: string }>,
+  issues: PreprocessorIssue[]
 ): void {
   
   const bgColor = element.attributes?.bg || element.attributes?.['bg-surface-50'] || 'surface';
@@ -159,7 +154,7 @@ function validateColorContrast(
 
 
 
-function validateAriaAttributes(element: any): void {
+function validateAriaAttributes(element: any, issues: PreprocessorIssue[]): void {
   const tag = element.name;
   
   
@@ -206,7 +201,7 @@ function validateAriaAttributes(element: any): void {
 
 
 
-function validateKeyboardAccessibility(element: any): void {
+function validateKeyboardAccessibility(element: any, issues: PreprocessorIssue[]): void {
   const tag = element.name;
   const hasTabindex = element.attributes?.tabindex !== undefined;
   const hasOnclick = element.attributes?.onclick !== undefined;
@@ -237,15 +232,17 @@ function validateKeyboardAccessibility(element: any): void {
 
 
 
-function validateAccessibility(ast: any, themeColors: Record<string, { light: string; dark: string }>): void {
-  issues = []; 
-  
+function validateAccessibility(
+  ast: any,
+  themeColors: Record<string, { light: string; dark: string }>
+): PreprocessorIssue[] {
+  const issues: PreprocessorIssue[] = [];
   
   function traverse(node: any) {
     if (node.type === 'Element') {
-      validateColorContrast(node, themeColors);
-      validateAriaAttributes(node);
-      validateKeyboardAccessibility(node);
+      validateColorContrast(node, themeColors, issues);
+      validateAriaAttributes(node, issues);
+      validateKeyboardAccessibility(node, issues);
     }
     
     if (node.children) {
@@ -254,12 +251,13 @@ function validateAccessibility(ast: any, themeColors: Record<string, { light: st
   }
   
   traverse(ast);
+  return issues;
 }
 
 
 
 
-function formatIssues(filename: string): void {
+function formatIssues(filename: string, issues: PreprocessorIssue[]): void {
   if (issues.length === 0) {
     console.log(`✅ ${filename}: No accessibility issues found`);
     return;
@@ -293,8 +291,8 @@ export function accessibilityPreprocessor() {
         
         const ast = parse(content, { filename });
         
-        validateAccessibility(ast, themeColors);
-        formatIssues(filename);
+        const issues = validateAccessibility(ast, themeColors);
+        formatIssues(filename, issues);
         
         
         return { code: content };

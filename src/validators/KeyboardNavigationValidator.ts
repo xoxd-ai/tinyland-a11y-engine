@@ -1,4 +1,4 @@
-import type { EvaluationResult } from '../types';
+import type { EvaluationResult } from '../types.js';
 
 export class KeyboardNavigationValidator {
   private idCounter = 0;

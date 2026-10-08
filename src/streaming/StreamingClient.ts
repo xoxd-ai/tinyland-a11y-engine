@@ -1,4 +1,4 @@
-import type { StreamMessage, EvaluationResult } from '../types';
+import type { StreamMessage, EvaluationResult } from '../types.js';
 
 
 

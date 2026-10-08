@@ -1,4 +1,4 @@
-import type { AccessibilityTestResult, ContrastTestResult } from './types';
+import type { AccessibilityTestResult, ContrastTestResult } from './types.js';
 import type { AxeResults } from 'axe-core';
 
 export interface ReportData {

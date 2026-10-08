@@ -9,9 +9,9 @@ import type {
   SamplingConfig,
   EvaluationTrigger,
   AccessibilityConfig
-} from '../types';
-import { EventEmitter } from '../engine/events';
-import { throttle, debounce } from '../utils/timing';
+} from '../types.js';
+import { EventEmitter } from '../engine/events.js';
+import { throttle, debounce } from '../utils/timing.js';
 
 export class DOMSampler extends EventEmitter {
   private config: SamplingConfig;

@@ -1,7 +1,7 @@
-import { HtmlReportGenerator } from './HtmlReportGenerator';
-import { JsonReportGenerator } from './JsonReportGenerator';
-import { MarkdownReportGenerator } from './MarkdownReportGenerator';
-import type { AccessibilityTestResult } from './types';
+import { HtmlReportGenerator } from './HtmlReportGenerator.js';
+import { JsonReportGenerator } from './JsonReportGenerator.js';
+import { MarkdownReportGenerator } from './MarkdownReportGenerator.js';
+import type { AccessibilityTestResult } from './types.js';
 import { writeFileSync, mkdirSync } from 'fs';
 import { join } from 'path';
 

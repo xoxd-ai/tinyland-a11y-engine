@@ -1,4 +1,4 @@
-import type { SamplingStrategy } from '../types';
+import type { SamplingStrategy } from '../types.js';
 
 export class DOMSampler {
   private intersectionObserver: IntersectionObserver | null = null;

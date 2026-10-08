@@ -11,7 +11,7 @@ import type {
   EvaluationContext,
   EvaluationPlugin,
   RuleResult
-} from '../types';
+} from '../types.js';
 
 export class EvaluationEngine {
   private rules: Map<string, EvaluationRule> = new Map();

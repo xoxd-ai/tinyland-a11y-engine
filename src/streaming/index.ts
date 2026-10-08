@@ -15,11 +15,11 @@ import type {
   ErrorData,
   BatchSummary,
   PerformanceMetrics
-} from '../types';
-import { EventEmitter } from '../engine/events';
-import { MessageQueue } from './queue';
-import { Compressor } from './compression';
-import { ReconnectStrategy } from './reconnect';
+} from '../types.js';
+import { EventEmitter } from '../engine/events.js';
+import { MessageQueue } from './queue.js';
+import { Compressor } from './compression.js';
+import { ReconnectStrategy } from './reconnect.js';
 
 export class StreamingProtocol extends EventEmitter {
   private config: AccessibilityConfig;

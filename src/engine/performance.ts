@@ -2,7 +2,7 @@
 
 
 
-import type { PerformanceMetrics } from '../types';
+import type { PerformanceMetrics } from '../types.js';
 
 export class PerformanceMonitor {
   private metrics: Map<string, { start: number; end?: number }> = new Map();

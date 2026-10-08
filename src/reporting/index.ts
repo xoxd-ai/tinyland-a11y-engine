@@ -1,6 +1,6 @@
-export { HtmlReportGenerator } from './HtmlReportGenerator';
-export { JsonReportGenerator } from './JsonReportGenerator';
-export { MarkdownReportGenerator } from './MarkdownReportGenerator';
-export { ReportOrchestrator } from './ReportOrchestrator';
-export type { ReportConfig, ReportOutputs } from './ReportOrchestrator';
-export type { JsonReport } from './JsonReportGenerator';
+export { HtmlReportGenerator } from './HtmlReportGenerator.js';
+export { JsonReportGenerator } from './JsonReportGenerator.js';
+export { MarkdownReportGenerator } from './MarkdownReportGenerator.js';
+export { ReportOrchestrator } from './ReportOrchestrator.js';
+export type { ReportConfig, ReportOutputs } from './ReportOrchestrator.js';
+export type { JsonReport } from './JsonReportGenerator.js';

@@ -3,10 +3,10 @@
 
 
 
-import type { RGB, ContrastResult, WCAGLevel } from './types';
-import { luminanceCache, contrastCache } from './cache';
-import { parseColor } from './parser';
-import { alphaBlend } from './conversion';
+import type { RGB, ContrastResult, WCAGLevel } from './types.js';
+import { luminanceCache, contrastCache } from './cache.js';
+import { parseColor } from './parser.js';
+import { alphaBlend } from './conversion.js';
 
 
 

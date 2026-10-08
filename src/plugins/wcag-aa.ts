@@ -2,7 +2,7 @@
 
 
 
-import type { EvaluationPlugin, EvaluationRule, EvaluationContext } from '../types';
+import type { EvaluationPlugin, EvaluationRule, EvaluationContext } from '../types.js';
 
 const plugin: EvaluationPlugin = {
   id: 'wcag-aa',

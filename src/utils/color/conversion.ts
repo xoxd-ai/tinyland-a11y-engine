@@ -3,8 +3,8 @@
 
 
 
-import type { RGB, HSL, OKLCH, OKLAB } from './types';
-import { conversionCache } from './cache';
+import type { RGB, HSL, OKLCH, OKLAB } from './types.js';
+import { conversionCache } from './cache.js';
 
 
 
