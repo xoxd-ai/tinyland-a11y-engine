@@ -292,7 +292,7 @@ export interface SamplingConfig {
 }
 
 export interface EvaluationTrigger {
-  type: 'scroll' | 'resize' | 'mutation' | 'focus' | 'route-change';
+  type: 'scroll' | 'resize' | 'mutation' | 'focus' | 'theme-change' | 'route-change';
   debounce?: number;
   throttle?: number;
   options?: Record<string, any>;
