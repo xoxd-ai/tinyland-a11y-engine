@@ -1,6 +1,6 @@
-import type { AccessibilityTestResult, ContrastTestResult } from './types';
+import type { AccessibilityTestResult, ContrastTestResult } from './types.js';
 import type { Result } from 'axe-core';
-import { JsonReportGenerator } from './JsonReportGenerator';
+import { JsonReportGenerator } from './JsonReportGenerator.js';
 
 export class MarkdownReportGenerator {
   private jsonGenerator: JsonReportGenerator;

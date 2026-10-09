@@ -3,8 +3,8 @@
 
 
 
-import type { EvaluationQueue, EvaluationOptions, EvaluationResult } from '../types';
-import { EvaluationEngine } from './EvaluationEngine';
+import type { EvaluationQueue, EvaluationOptions, EvaluationResult } from '../types.js';
+import { EvaluationEngine } from './EvaluationEngine.js';
 
 export class QueueManager {
   private queues: Map<string, EvaluationQueue> = new Map();

@@ -12,12 +12,12 @@ import type {
   AccessibilityIssue,
   PerformanceMetrics,
   CustomRule
-} from '../types';
-import { RuleRegistry } from './rules/registry';
-import { PerformanceMonitor } from './performance';
-import { ContextBuilder } from './context';
-import { WorkerPool } from './workers';
-import { EventEmitter } from './events';
+} from '../types.js';
+import { RuleRegistry } from './rules/registry.js';
+import { PerformanceMonitor } from './performance.js';
+import { ContextBuilder } from './context.js';
+import { WorkerPool } from './workers.js';
+import { EventEmitter } from './events.js';
 
 export class EvaluationEngine extends EventEmitter {
   private config: AccessibilityConfig;

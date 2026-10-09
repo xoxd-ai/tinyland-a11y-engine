@@ -5,10 +5,10 @@
 
 
 
-import { EvaluationEngine } from './core/EvaluationEngine';
-import { QueueManager } from './core/QueueManager';
-import { StreamingProtocol } from './streaming/StreamingProtocol';
-import type { EvaluationResult } from './types';
+import { EvaluationEngine } from './core/EvaluationEngine.js';
+import { QueueManager } from './core/QueueManager.js';
+import { StreamingProtocol } from './streaming/StreamingProtocol.js';
+import type { EvaluationResult } from './types.js';
 
 
 
@@ -22,10 +22,10 @@ export async function initializeAccessibilityEngine() {
 
   
   const plugins = await Promise.all([
-    import('./plugins/wcag-aa'),
-    import('./plugins/aria-validator'),
-    import('./plugins/color-contrast'),
-    import('./plugins/keyboard-navigation')
+    import('./plugins/wcag-aa.js'),
+    import('./plugins/aria-validator.js'),
+    import('./plugins/color-contrast.js'),
+    import('./plugins/keyboard-navigation.js')
   ]);
 
   plugins.forEach(module => {

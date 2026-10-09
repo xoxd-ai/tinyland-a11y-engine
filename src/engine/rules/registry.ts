@@ -2,7 +2,7 @@
 
 
 
-import type { CustomRule } from '../../types';
+import type { CustomRule } from '../../types.js';
 
 export interface RegistryOptions {
   wcag?: '2.1' | '2.2';

@@ -1,4 +1,4 @@
-import type { AccessibilityTestResult } from './types';
+import type { AccessibilityTestResult } from './types.js';
 import type { Result } from 'axe-core';
 
 export interface JsonReport {

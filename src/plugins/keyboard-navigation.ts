@@ -3,7 +3,7 @@
 
 
 
-import type { EvaluationPlugin } from '../types';
+import type { EvaluationPlugin } from '../types.js';
 
 const plugin: EvaluationPlugin = {
   id: 'keyboard-navigation',

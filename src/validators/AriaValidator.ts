@@ -3,7 +3,7 @@
 
 
 
-import type { EvaluationResult } from '../types';
+import type { EvaluationResult } from '../types.js';
 
 export interface AriaValidationOptions {
   checkRoles?: boolean;

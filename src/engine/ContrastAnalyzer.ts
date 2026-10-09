@@ -1,4 +1,4 @@
-import type { ContrastEvaluation } from '../types';
+import type { ContrastEvaluation } from '../types.js';
 
 export class ContrastAnalyzer {
   private cache = new Map<string, number>();

@@ -1,8 +1,8 @@
-import { DOMSampler } from './sampler/DOMSampler';
-import { StreamingClient } from './streaming/StreamingClient';
+import { DOMSampler } from './sampler/DOMSampler.js';
+import { StreamingClient } from './streaming/StreamingClient.js';
 
-import { ContrastAnalyzer } from './engine/ContrastAnalyzer';
-import type { EvaluationConfig, EvaluationResult, EvaluationStats } from './types';
+import { ContrastAnalyzer } from './engine/ContrastAnalyzer.js';
+import type { EvaluationConfig, EvaluationResult, EvaluationStats } from './types.js';
 
 export class AccessibilityOrchestrator {
   private sampler: DOMSampler;

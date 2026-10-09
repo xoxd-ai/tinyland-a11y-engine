@@ -2,7 +2,7 @@
 
 
 
-import type { StreamMessage, EvaluationResult } from '../types';
+import type { StreamMessage, EvaluationResult } from '../types.js';
 
 export class StreamingProtocol {
   private ws: WebSocket | null = null;

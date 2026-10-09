@@ -3,8 +3,8 @@
 
 
 
-import type { RGB, HSL, OKLCH, OKLAB, ParsedColor } from './types';
-import { parseCache } from './cache';
+import type { RGB, HSL, OKLCH, OKLAB, ParsedColor } from './types.js';
+import { parseCache } from './cache.js';
 
 
 

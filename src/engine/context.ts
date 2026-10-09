@@ -2,7 +2,7 @@
 
 
 
-import type { AccessibilityConfig, EvaluationContext, EvaluationOptions, ViewportInfo } from '../types';
+import type { AccessibilityConfig, EvaluationContext, EvaluationOptions, ViewportInfo } from '../types.js';
 
 export class ContextBuilder {
   async build(config: AccessibilityConfig, _elements?: Element[]): Promise<EvaluationContext> {

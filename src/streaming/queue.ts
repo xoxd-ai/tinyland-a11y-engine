@@ -2,7 +2,7 @@
 
 
 
-import type { StreamMessage } from '../types';
+import type { StreamMessage } from '../types.js';
 
 export class MessageQueue {
   private queue: StreamMessage[] = [];
