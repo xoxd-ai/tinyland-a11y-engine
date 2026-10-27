@@ -2,8 +2,8 @@
 BUILD.bazel for @tummycrypt/tinyland-a11y-engine.
 
 Bazel is the build and distribution authority (RU6, RU8).
-  Build: bazel build //:pkg
-  Test:  bazel test //...
+  Gate:  CI (.github/workflows/ci.yml) builds //:pkg //:test.
+  Local: bazel build //:pkg, bazel test //... (local, non-qualifying)
   Consumers: bazel_dep(name = "tummycrypt_tinyland_a11y_engine", version = "1.0.0")
              from xoxd-ai/bazel-registry, linked with
              npm_link_package(name = "node_modules/@tummycrypt/tinyland-a11y-engine",

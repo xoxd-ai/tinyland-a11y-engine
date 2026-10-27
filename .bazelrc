@@ -1,3 +1,7 @@
+# Bound the Bazel client server (TIN-5770, R470): it exits after 120 s idle
+# instead of holding memory for hours after a one-shot build or test.
+startup --max_idle_secs=120
+
 common --enable_bzlmod
 common --registry=https://raw.githubusercontent.com/xoxd-ai/bazel-registry/main
 common --registry=https://bcr.bazel.build
@@ -15,5 +19,10 @@ build:ci --color=no
 build:ci --curses=no
 build:ci --noshow_loading_progress
 test:ci --test_output=errors
+
+# Endpoint-free GloriousFlywheel behavior, when a fragment is vendored. A
+# remote failure must fail the action, never fall back to local (TIN-5770, R471).
+try-import %workspace%/.bazelrc.flywheel
+common:flywheel --remote_local_fallback=false
 
 try-import %workspace%/user.bazelrc
